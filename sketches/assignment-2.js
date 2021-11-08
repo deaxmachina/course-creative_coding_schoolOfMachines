@@ -1,10 +1,14 @@
+// Assignment 2 (Week 1, 2)
+// Chaos, 9 or 99 lines
+// Also your call, if you feel up for it, try the one you haven’t done in the first prompt.
+
 const canvasSketch = require('canvas-sketch');
 const { renderPaths, createPath, pathsToPolylines } = require('canvas-sketch-util/penplot');
 const { clipPolylinesToBox } = require('canvas-sketch-util/geometry');
 const Random = require('canvas-sketch-util/random');
 
 // You can force a specific seed by replacing this with a string value
-const defaultSeed = '';
+const defaultSeed = ''
 
 // Set a random seed so we can reproduce this print later
 Random.setSeed(defaultSeed || Random.getRandomSeed());
@@ -22,33 +26,24 @@ const settings = {
 };
 
 const sketch = (props) => {
-  const { width, height, units } = props;
+  const { context, width, height, units } = props;
 
   // Holds all our 'path' objects
   // which could be from createPath, or SVGPath string, or polylines
   const paths = [];
 
-  // Drawing a line 
+  // Triangle facing right and down
   let p = createPath()
-  p.moveTo(3, 3)
-  p.lineTo(3, 10)
-  // paths.push(p) // make sure to add the line to the pahts array so it gets drawn 
+  for (let i = 0; i < 99; i++) {
+    const randomX = width*Math.random()
+    const randomY = width*Math.random()
+    
+    p.moveTo(randomX, randomY)
+    p.lineTo(randomY + Math.random()*15, randomY + Math.random()*15)
+  }
+  paths.push(p)
 
-  // Draw a square 
-  // let p2 = createPath()
-  // p2.moveTo(3, 10)
-  // p2.lineTo(10, 10)
-  // paths.push(p2)
-  // let p3 = createPath()
-  // p3.moveTo(10, 10)
-  // p3.lineTo(10, 3)
-  // paths.push(p3)
-
-  p.lineTo(10, 10)
-  p.lineTo(10, 3)
-  p.lineTo(3, 3)
-  paths.push(p) // make sure to add the line to the pahts array so it gets drawn 
-
+    
 
   // Convert the paths into polylines so we can apply line-clipping
   // When converting, pass the 'units' to get a nice default curve resolution
@@ -65,10 +60,10 @@ const sketch = (props) => {
     ...props,
     lineJoin: 'round',
     lineCap: 'round',
-    // foreground: 'white',
-    // background: 'black',
+    foreground: '#293241',
+    background: '#ee6c4d',
     // in working units; you might have a thicker pen
-    lineWidth: 0.08,
+    lineWidth: 0.3,
     // Optimize SVG paths for pen plotter use
     optimize: true
   });
