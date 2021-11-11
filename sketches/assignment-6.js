@@ -40,11 +40,11 @@ const sketch = () => {
       const {radians, endX, endY} = toCircle(x, y, length, angle)
       //context.strokeStyle ='#ebebeb'
       context.strokeStyle ='rgba(255, 255, 255, 0.8)'
-      context.lineWidth = 30
+      context.lineWidth = 15
       context.beginPath();
       context.moveTo(endX, endY)
       context.lineCap = "round"
-      context.lineTo(endX+20, endY+20);
+      context.lineTo(endX+10, endY+10);
       context.closePath();
       context.stroke();
     }
