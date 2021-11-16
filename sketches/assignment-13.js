@@ -1,6 +1,6 @@
-// Assignment 10 (Week 2, Assignment 3)
-//  No straight lines
-// And no grids, if you feel up for it.
+// Week 2, 6 (Assignment 13)
+// One imperfect circle
+// x = cos(angle), y = sin(angle * 2)? Just throwing ideas out there.
 
 const canvasSketch = require('canvas-sketch');
 const { renderPaths, createPath, pathsToPolylines } = require('canvas-sketch-util/penplot');
@@ -28,37 +28,31 @@ const settings = {
 const sketch = (props) => {
   const { width, height, units } = props;
 
-  // Holds all our 'path' objects
-  // which could be from createPath, or SVGPath string, or polylines
   const paths = [];
 
-  // Bezier curves with slight variation of control points
-  let cubicBezier = createPath()
-  const a = { x: 0, y: 0 } // start
-  const b = { x: width, y: height } // end 
-  const c = { x: width+10, y: 10 } // control 1 
-  const d = { x: -width+10, y: height-10 } // control 2
-  cubicBezier.moveTo(a.x, a.y)
-  // cubicBezier.bezierCurveTo(c.x, c.y, d.x, d.y, b.x, b.y)
-  // paths.push(cubicBezier)
+  const p = createPath()
+  // circle in the center of the page 
+  let centerX = width/2
+  let centerY = height/2
 
-  const possibleSteps = [0, 1/2]
-  for (let i = 0; i < 40; i++) {
-    cubicBezier.moveTo(a.x, a.y)
-    //if (Random.value() < 0.3) continue
-    cubicBezier.bezierCurveTo(
-      c.x+i*Random.pick([0, 1, 2]), Random.pick([0, 0.5]), 
-      d.x-i*Random.pick([0, 1, 2]), d.y+Random.pick([0, 0.5]), 
-      b.x, b.y)
-    paths.push(cubicBezier)
+  // step is the angle increment for drawing each point 
+  let step = 0.05 // in radians 
+
+  // start angle at 0 and increment by step radians 
+  let r = 0;
+  for (let angle = 0; angle <= 2 * Math.PI; angle = angle + step) {
+    // want the x and y coord for the point 
+    let x = Math.cos(angle) + centerX
+    // imperfect circle
+    let y = Math.sin(angle * 1.5) + centerY
+    // draw a circle of gradually increasing radius at each point
+    p.arc(x, y, 3+r, 0, 2*Math.PI)
+    r += 0.08*Math.random() // increment the radius by a bit
   }
+  paths.push(p)
 
 
-  // Convert the paths into polylines so we can apply line-clipping
-  // When converting, pass the 'units' to get a nice default curve resolution
   let lines = pathsToPolylines(paths, { units });
-
-  // Clip to bounds, using a margin in working units
   const margin = 1; // in working 'units' based on settings
   const box = [ margin, margin, width - margin, height - margin ];
   lines = clipPolylinesToBox(lines, box);
@@ -69,9 +63,11 @@ const sketch = (props) => {
     ...props,
     lineJoin: 'round',
     lineCap: 'round',
-    foreground: 'white',
-    background: 'black',
-    lineWidth: 0.03,
+    background: '#14213d',
+    foreground: '#f4f1de',
+    // in working units; you might have a thicker pen
+    lineWidth: 0.05,
+    // Optimize SVG paths for pen plotter use
     optimize: true
   });
 };
