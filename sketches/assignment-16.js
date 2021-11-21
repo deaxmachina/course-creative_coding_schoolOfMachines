@@ -1,3 +1,6 @@
+// 16. Frequency increases left to right
+// 1D, 2D, 3D or even 4D noise if you feel like it!
+
 const canvasSketch = require('canvas-sketch');
 const { renderPaths, createPath, pathsToPolylines } = require('canvas-sketch-util/penplot');
 const { clipPolylinesToBox } = require('canvas-sketch-util/geometry');
@@ -28,21 +31,29 @@ const sketch = (props) => {
   // which could be from createPath, or SVGPath string, or polylines
   const paths = [];
 
-  let p = createPath()
-  // grid cell size 
+  
+
+  // step size 
   let stepX = 0.3
   let stepY = 0.3
 
-  for (let x = 0; x <= width; x+=stepX) {
-    for (let y = 0; y <= height; y+=stepY) {
-      // 2D noise 
-      let noiseXY = Random.noise2D(x, y, 0.02, 0.3)
-      p.moveTo(x, y)
-      p.lineTo(x + noiseXY, y + noiseXY)
+  for (let x=0; x<=width; x+=stepX) {
+    for (let y=0; y<=height; y+=stepY) {
+      let p = createPath()
+      // create some noise in 2D
+      let noiseXY = Random.noise2D(x, y, 0.1, 0.2*x)
+      console.log(noiseXY)
+      //p.moveTo(x, y)
+      p.arc(x+noiseXY, y+noiseXY, 0.15, 0, 2*Math.PI)
+      //p.lineTo(x + noiseXY, y + noiseXY)
+      paths.push(p)
     }
   }
+  
+  
 
-  paths.push(p)
+
+
 
   let lines = pathsToPolylines(paths, { units });
 
@@ -58,10 +69,10 @@ const sketch = (props) => {
     lineJoin: 'round',
     lineCap: 'round',
     // in working units; you might have a thicker pen
-    lineWidth: 0.08,
+    lineWidth: 0.07,
     // Optimize SVG paths for pen plotter use
     optimize: true,
-    background: 'black', 
+    background: 'black',
     foreground: 'white'
   });
 };
