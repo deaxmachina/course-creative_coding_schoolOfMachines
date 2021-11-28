@@ -28,19 +28,6 @@ const sketch = (props) => {
   // which could be from createPath, or SVGPath string, or polylines
   const paths = [];
 
-  // Draw random arcs
-  const count = 450;
-  for (let i = 0; i < count; i++) {
-    // setup arc properties randomly
-    const angle = Random.gaussian(0, Math.PI / 2);
-    const arcLength = Math.abs(Random.gaussian(0, Math.PI / 2));
-    const r = ((i + 1) / count) * Math.min(width, height) / 1;
-
-    // draw the arc
-    const p = createPath();
-    p.arc(width / 2, height / 2, r, angle, angle + arcLength);
-    paths.push(p);
-  }
 
   // Convert the paths into polylines so we can apply line-clipping
   // When converting, pass the 'units' to get a nice default curve resolution
