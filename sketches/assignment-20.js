@@ -1,3 +1,6 @@
+// 20. Illusion of depth
+// Does it come from the contrast of scale? Or maybe shading?
+
 const canvasSketch = require('canvas-sketch');
 const { renderPaths, createPath, pathsToPolylines } = require('canvas-sketch-util/penplot');
 const { clipPolylinesToBox } = require('canvas-sketch-util/geometry');
@@ -14,8 +17,9 @@ console.log('Random Seed:', Random.getSeed());
 
 const settings = {
   suffix: Random.getSeed(),
-  dimensions: 'A4',
-  orientation: 'portrait',
+  // dimensions: 'A3',
+  // orientation: 'portrait',
+  dimensions: [ 30, 30 ],
   pixelsPerInch: 300,
   scaleToView: true,
   units: 'cm'
@@ -27,6 +31,33 @@ const sketch = (props) => {
   // Holds all our 'path' objects
   // which could be from createPath, or SVGPath string, or polylines
   const paths = [];
+
+  // Goal: Make concentric circles 
+  // 1. Make a single circle out of lines going inwards 
+  const centerX = width/2
+  const centerY = height/2
+
+  const step = 0.01
+  const makeCircle = (innerRadius, outerRadius, step) => {
+    for (let angle=0; angle<=2*Math.PI; angle+=step) {
+      let xInner = innerRadius*Math.cos(angle) + centerX 
+      let yInner = innerRadius*Math.sin(angle) + centerY
+  
+      let xOuter = outerRadius*Math.cos(angle) + centerX//+Random.noise1D(angle, 1, 0.5) 
+      let yOuter = outerRadius*Math.sin(angle) + centerY//+Random.noise1D(angle, 1, 0.5)
+      let p = createPath()
+      p.moveTo(xInner, yInner)
+      p.lineTo(
+        xOuter+Random.noise1D(angle, 1.5, 0.5), 
+        yOuter+Random.noise1D(angle, 1.5, 0.5))
+      paths.push(p)
+    }
+  }
+  for (let radius=1; radius<=12; radius++) {
+    makeCircle(radius, radius+1, step)
+  }
+  
+
 
 
   // Convert the paths into polylines so we can apply line-clipping
@@ -45,9 +76,11 @@ const sketch = (props) => {
     lineJoin: 'round',
     lineCap: 'round',
     // in working units; you might have a thicker pen
-    lineWidth: 0.08,
+    lineWidth: 0.06,
     // Optimize SVG paths for pen plotter use
-    optimize: true
+    optimize: true,
+    background: '#006466', //'#b5179e' '#f72585',
+    foreground: '#4d194d' //'#3f37c9' '#480ca8'
   });
 };
 
